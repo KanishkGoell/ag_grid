@@ -28,6 +28,8 @@ const Dashboard = () => {
                 
                 
                 <div className="dashboard">
+
+                    <CustomStatusBar gridApi={null} className="dashboard-section"/> {/* Ensure this is styled accordingly */}
                     <MyAgGrid />
                 </div>
             </main>

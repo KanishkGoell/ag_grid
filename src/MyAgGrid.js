@@ -12,29 +12,34 @@ LicenseManager.setLicenseKey('YOUR_TRIAL_LICENSE_KEY'); // Replace with your tri
 const MyAgGrid = () => {
     const [rowData, setRowData] = useState([]);
     const [gridApi, setGridApi] = useState(null);
+    const [filterPresets, setFilterPresets] = useState({});
 
-    const dateComparator = (filterLocalDateAtMidnight, cellValue) => {
-        const cellDate = moment(cellValue, 'MM/DD/YYYY').toDate();
-        if (cellDate < filterLocalDateAtMidnight) {
-            return -1;
-        } else if (cellDate > filterLocalDateAtMidnight) {
-            return 1;
-        }
-        return 0;
-    };
 
+
+const dateComparator = (filterLocalDateAtMidnight, cellValue) => {
+    const cellDate = moment(cellValue, 'MM/DD/YYYY').toDate();
+    if (cellDate < filterLocalDateAtMidnight) {
+        return -1;
+    } else if (cellDate > filterLocalDateAtMidnight) {
+        return 1;
+    }
+    return 0;
+};
+    // Function to safely parse numbers, removing $ and commas for salary
     const parseSalary = value => {
-        const cleanedValue = value.replace(/[$,]/g, '');
+        const cleanedValue = value.replace(/[$,]/g, ''); // Remove $ and ,
         const number = parseFloat(cleanedValue);
-        return isNaN(number) ? 0 : number;
+        return isNaN(number) ? 0 : number; // Replace 0 with any default value you prefer
     };
 
+    // Function to safely parse percentages, removing % symbol
     const parseBonus = value => {
-        const cleanedValue = value.replace(/[%]/g, '');
+        const cleanedValue = value.replace(/[%]/g, ''); // Remove %
         const number = parseFloat(cleanedValue);
-        return isNaN(number) ? 0 : number;
+        return isNaN(number) ? 0 : number; // Replace 0 with any default value you prefer
     };
 
+    // Column definitions
     const columnDefs = [
         { field: 'Employee ID', filter: 'agTextColumnFilter', sortable: false },
         { field: 'Full Name', filter: 'agTextColumnFilter', sortable: false },
@@ -55,6 +60,7 @@ const MyAgGrid = () => {
             filterParams: { comparator: dateComparator },
             valueGetter: params => moment(params.data['Hire Date'], 'MM/DD/YYYY').toDate(),
             valueFormatter: params => moment(params.value).format('MM/DD/YYYY')
+            
         },
         { 
             field: 'Exit Date', 
@@ -66,37 +72,53 @@ const MyAgGrid = () => {
         }
     ];
 
-    useEffect(() => {
-        fetch('./data.json')
-            .then(response => response.json())
-            .then(data => {
-                const typedData = data.map(item => ({
-                    ...item,
-                    Age: parseFloat(item.Age),
-                    'Annual Salary': parseSalary(item['Annual Salary']),
-                    'Bonus %': parseBonus(item['Bonus %']),
-                    'Hire Date': new Date(item['Hire Date']).toLocaleDateString('en-US'),
-                    'Exit Date': new Date(item['Exit Date']).toLocaleDateString('en-US'),
-                }));
-                setRowData(typedData);
-            })
-            .catch(error => console.error('Error loading the data:', error));
-    }, []);
+// Fetching data and parsing numbers
+useEffect(() => {
+    fetch('./data.json')
+        .then(response => response.json())
+        .then(data => {
+            const typedData = data.map(item => ({
+                ...item,
+                Age: parseFloat(item.Age),
+                'Annual Salary': parseSalary(item['Annual Salary']),
+                'Bonus %': parseBonus(item['Bonus %']),
+                // Convert the Date object back to a string in the format 'MM/DD/YYYY'
+                'Hire Date': new Date(item['Hire Date']).toLocaleDateString('en-US'),
+                'Exit Date': new Date(item['Exit Date']).toLocaleDateString('en-US'),
+            }));
+            setRowData(typedData);
+        })
+        .catch(error => console.error('Error loading the data:', error));
+}, []);
 
+    // Grid ready event
     const onGridReady = params => {
         setGridApi(params.api);
+        const savedFilters = JSON.parse(sessionStorage.getItem('gridFilters'));
+        if (savedFilters) {
+            params.api.setFilterModel(savedFilters);
+        }
     };
 
+    // Filter change event
     const onFilterChanged = () => {
         if (gridApi) {
             const allFilters = gridApi.getFilterModel();
-            // Save filter model to backend here if needed
+            sessionStorage.setItem('gridFilters', JSON.stringify(allFilters));
+        }
+    };
+
+    // Reset filters
+    const resetFilters = () => {
+        if (gridApi) {
+            gridApi.setFilterModel({});
+            sessionStorage.removeItem('gridFilters');
         }
     };
 
     return (
         <div className="ag-theme-alpine" style={{ height: 600, width: '100%' }}>
-            <CustomStatusBar gridApi={gridApi} />
+        {/* <CustomStatusBar gridApi={gridApi} setFilterPresets={setFilterPresets} filterPresets={filterPresets} /> */}
             <AgGridReact
                 rowData={rowData}
                 columnDefs={columnDefs}
