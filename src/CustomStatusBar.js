@@ -1,26 +1,35 @@
 import React, { useState, useEffect } from 'react';
-import './CustomStatusBar.css'; // Ensure you have a corresponding CSS file
+import axios from 'axios';
+import './CustomStatusBar.css';
 
 const CustomStatusBar = ({ gridApi }) => {
     const [newPresetName, setNewPresetName] = useState('');
-    const [filterPresets, setFilterPresets] = useState(JSON.parse(sessionStorage.getItem('filterPresets')) || {});
+    const [filterPresets, setFilterPresets] = useState({});
 
     useEffect(() => {
-        sessionStorage.setItem('filterPresets', JSON.stringify(filterPresets));
-    }, [filterPresets]);
+        // Fetch filter presets from backend
+        axios.get('http://localhost:5000/api/filter-presets')
+            .then(response => setFilterPresets(response.data))
+            .catch(error => console.error('Error fetching filter presets:', error));
+    }, []);
 
     const resetFilters = () => {
         if (gridApi) {
             gridApi.setFilterModel({});
-            sessionStorage.removeItem('gridFilters');
         }
     };
 
     const saveFilterPreset = () => {
         if (gridApi && newPresetName) {
             const currentFilters = gridApi.getFilterModel();
-            setFilterPresets({ ...filterPresets, [newPresetName]: currentFilters });
+            const updatedFilterPresets = { ...filterPresets, [newPresetName]: currentFilters };
+            setFilterPresets(updatedFilterPresets);
             setNewPresetName('');
+
+            // Save filter presets to backend
+            axios.post('http://localhost:5000/api/filter-presets', updatedFilterPresets)
+                .then(response => console.log(response.data.message))
+                .catch(error => console.error('Error saving filter presets:', error));
         }
     };
 
