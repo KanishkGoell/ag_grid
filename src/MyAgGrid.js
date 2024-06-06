@@ -94,7 +94,7 @@ useEffect(() => {
     // Grid ready event
     const onGridReady = params => {
         setGridApi(params.api);
-        const savedFilters = JSON.parse(localStorage.getItem('gridFilters'));
+        const savedFilters = JSON.parse(sessionStorage.getItem('gridFilters'));
         if (savedFilters) {
             params.api.setFilterModel(savedFilters);
         }
@@ -104,7 +104,7 @@ useEffect(() => {
     const onFilterChanged = () => {
         if (gridApi) {
             const allFilters = gridApi.getFilterModel();
-            localStorage.setItem('gridFilters', JSON.stringify(allFilters));
+            session.setItem('gridFilters', JSON.stringify(allFilters));
         }
     };
 
@@ -112,7 +112,7 @@ useEffect(() => {
     const resetFilters = () => {
         if (gridApi) {
             gridApi.setFilterModel({});
-            localStorage.removeItem('gridFilters');
+            session.removeItem('gridFilters');
         }
     };
 

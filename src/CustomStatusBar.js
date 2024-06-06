@@ -3,16 +3,16 @@ import './CustomStatusBar.css'; // Ensure you have a corresponding CSS file
 
 const CustomStatusBar = ({ gridApi }) => {
     const [newPresetName, setNewPresetName] = useState('');
-    const [filterPresets, setFilterPresets] = useState(JSON.parse(localStorage.getItem('filterPresets')) || {});
+    const [filterPresets, setFilterPresets] = useState(JSON.parse(sessionStorage.getItem('filterPresets')) || {});
 
     useEffect(() => {
-        localStorage.setItem('filterPresets', JSON.stringify(filterPresets));
+        sessionStorage.setItem('filterPresets', JSON.stringify(filterPresets));
     }, [filterPresets]);
 
     const resetFilters = () => {
         if (gridApi) {
             gridApi.setFilterModel({});
-            localStorage.removeItem('gridFilters');
+            sessionStorage.removeItem('gridFilters');
         }
     };
 
