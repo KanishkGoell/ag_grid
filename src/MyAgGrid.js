@@ -96,7 +96,6 @@ const MyAgGrid = () => {
 
     return (
         <div className="ag-theme-alpine" style={{ height: 600, width: '100%' }}>
-            <CustomStatusBar gridApi={gridApi} />
             <AgGridReact
                 rowData={rowData}
                 columnDefs={columnDefs}
