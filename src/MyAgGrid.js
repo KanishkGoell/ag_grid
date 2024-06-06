@@ -104,7 +104,7 @@ useEffect(() => {
     const onFilterChanged = () => {
         if (gridApi) {
             const allFilters = gridApi.getFilterModel();
-            session.setItem('gridFilters', JSON.stringify(allFilters));
+            sessionStorage.setItem('gridFilters', JSON.stringify(allFilters));
         }
     };
 
@@ -112,7 +112,7 @@ useEffect(() => {
     const resetFilters = () => {
         if (gridApi) {
             gridApi.setFilterModel({});
-            session.removeItem('gridFilters');
+            sessionStorage.removeItem('gridFilters');
         }
     };
 
