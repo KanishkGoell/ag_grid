@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/ag_grid/static/css/main.8619e91d.css",
-    "main.js": "/ag_grid/static/js/main.9c9c39f9.js",
+    "main.js": "/ag_grid/static/js/main.e18618c2.js",
     "static/js/453.c23ba25f.chunk.js": "/ag_grid/static/js/453.c23ba25f.chunk.js",
     "index.html": "/ag_grid/index.html",
     "main.8619e91d.css.map": "/ag_grid/static/css/main.8619e91d.css.map",
-    "main.9c9c39f9.js.map": "/ag_grid/static/js/main.9c9c39f9.js.map",
+    "main.e18618c2.js.map": "/ag_grid/static/js/main.e18618c2.js.map",
     "453.c23ba25f.chunk.js.map": "/ag_grid/static/js/453.c23ba25f.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.8619e91d.css",
-    "static/js/main.9c9c39f9.js"
+    "static/js/main.e18618c2.js"
   ]
 }
